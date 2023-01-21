@@ -15,6 +15,12 @@ py2neo = "^2021.2.3"
 pydantic = "^1.10.2"
 tqdm = "^4.64.1"
 aiofiles = "^22.1.0"
+python-dotenv = "^0.21.0"
+animation = "^0.0.7"
+pgdumplib = "^3.1.0"
+psycopg2 = "^2.9.5"
+sqlalchemy = "^1.4.46"
+flask = "^2.2.2"
 
 
 [build-system]

@@ -6,7 +6,7 @@ Required
 
 - Python 3.11 (Use [pyenv](https://github.com/pyenv/pyenv) to install and set version)
 - make
-- [neo4j](https://neo4j.com/download/)
+- [neo4j desktop](https://neo4j.com/download/)
 
 Run the ff:
 
