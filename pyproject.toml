@@ -21,6 +21,7 @@ pgdumplib = "^3.1.0"
 psycopg2 = "^2.9.5"
 sqlalchemy = "^1.4.46"
 flask = "^2.2.2"
+black = "^22.12.0"
 
 
 [build-system]

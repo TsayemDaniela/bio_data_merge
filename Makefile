@@ -2,17 +2,20 @@
 VENV := venv
 
 
-all: init
+all: install-deps
 
 init:
-	poetry env use ~/.pyenv/shims/python3
 	python3 -m pip install setuptools poetry
+	poetry env use ~/.pyenv/shims/python3
 	# wget https://neo4j.com/artifact.php?name=neo4j-community-5.3.0-unix.tar.gz
 
 install-deps: init
 	poetry install
 
-run:
-	poetry run python -m bio_data_merge
+run-processor:
+	poetry run python -m bio_data_merge.processor
 
-.PHONY: all run
+run-frontend:
+	flask --app bio_data_merge.frontend --debug run --port=8000
+
+.PHONY: all
