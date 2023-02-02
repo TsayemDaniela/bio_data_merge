@@ -16,6 +16,9 @@ run-processor:
 	poetry run python -m bio_data_merge.processor
 
 run-frontend:
-	flask --app bio_data_merge.frontend --debug run --port=8000
+	flask --app bio_data_merge.frontend --debug run --port=8000 --host=0.0.0.0
+
+run-utils-overlap:
+	poetry run python utils/overlap.py 
 
 .PHONY: all

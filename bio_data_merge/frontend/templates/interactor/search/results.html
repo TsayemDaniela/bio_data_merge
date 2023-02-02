@@ -5,21 +5,24 @@ block content %}
   class="flex-grow flex flex-col bg-gray-200 dark:bg-gray-200 flex-grow dark:text-gray-800"
 >
   {% if queryResult %}
-  <div class="w-[1200px] h-[600px] bg-gray-100 my-20 mx-auto" id="graph"></div>
-  <div class="mx-auto w-96">
-      <div class="panel panel-default">
+  <div class="w-[1200px] h-[1000px] bg-gray-100 my-10 mx-auto" id="graph"></div>
+  <div class="mx-auto w-[1200px] h-[800px] overflow-auto mb-10 dark:bg-gray-800 bg-gray-500 rounded-xl text-white">
+      <div class="flex flex-col justify-center mx-auto w-full items-center py-5">
         <div class="panel-heading text-xl font-boldeva">Search Results for {{ query_name}}</div>
-        <!-- <table id="results" class="table-fixed">
-          <thead>
-            <tr>
-              <th>Movie</th>
-              <th>Released</th>
-              <th>Tagline</th>
-              <th>Votes</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table> -->
+        <div>Total interactors: <span id="nodesLength"></span></div>
+        <div class="flex-grow h-full w-full mb-10">
+          <table id="results" class="table-auto w-full text-center text-white divide-y">
+            <thead >
+              <tr class="divide-x divide-dotted">
+                <th>Name</th>
+                <th>Source Database</th>
+                <th>Organism Name</th>
+                <th>Aliases / Synonyms</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-dashed"></tbody>
+          </table>
+      </div>
       </div>
     </div>
   </div>
@@ -54,12 +57,13 @@ block content %}
 <script src="https://d3js.org/d3.v3.min.js" type="text/javascript"></script>
 <script type="text/javascript">
   const width = 1200,
-    height = 600;
+    height = 800;
 
   const force = d3.layout
     .force()
     .charge(-100)
-    .linkDistance(140)
+    .linkDistance(100)
+    .gravity(.035)
     .size([width, height]);
 
   const svg = d3
@@ -74,6 +78,19 @@ block content %}
       throw error;
       return;
     }
+
+    $('#nodesLength').html(graph.nodes.length)
+    
+    const data = graph.nodes
+    console.log(data);
+    const t = $("table#results tbody").empty();
+      data.forEach(function (interactor, index) {
+          $("<tr class='divide-x divide-dotted'><td class='interactor'>" + interactor.title
+              + "</td><td>" + interactor.db
+              + "</td><td>" + (interactor.Organism_Name || interactor.species)
+              + "</td><td>" + (interactor.Synonyms || interactor.Aliases)
+              + "</td></tr>").appendTo(t)
+      });
 
     force.nodes(graph.nodes).links(graph.links).start();
 
@@ -97,28 +114,17 @@ block content %}
       .data(graph.nodes)
       .enter()
       .append("circle")
-      .attr("class", function (d) {
-        return "node " + d.label;
+      .attr("class", function (d, i) {
+        return "node " + d.label + i; 
       })
-      .attr("r", 20)
+      .attr("r", 15)
       .attr("fill", function (d, i) {
         return color(i);
       })
-      .on("mouseover", function (d, i) {
-        d3.select(this).transition().duration("50").attr("opacity", ".85");
-        //Makes the new div appear on hover:
-        div.transition().duration(50).style("opacity", 1);
-        div
-          .html(`${d.title}`)
-          .style("left", d3.event.pageX + 10 + "px")
-          .style("top", d3.event.pageY - 15 + "px");
-      })
-      .on("mouseout", function (d, i) {
-        d3.select(this).transition().duration("50").attr("opacity", "1");
-        //Makes the new div disappear:
-        div.transition().duration("50").style("opacity", 0);
-      })
       .call(force.drag);
+      
+      node.append("title")
+      .text(function (d) { return `${d.db}:  ${d.title}`; })
 
     // force feed algo ticks
     force.on("tick", function () {
@@ -142,20 +148,11 @@ block content %}
         })
         .attr("cy", function (d) {
           return d.y;
-        });
+        })
     });
   });
 
-  const data = graph.nodes
-  const t = $("table#results tbody").empty();
-   //  if (!data || data.length == 0) return;
-    data.forEach(function (interactor, index) {
-        $("<tr><td class='interactor'>" + interactor.title
-            + "</td><td>" + interactor.released
-            + "</td><td>" + interactor.tagline
-            + "</td><td id='votes" + index + "'>" + (interactor.votes || 0)
-            + "</td></tr>").appendTo(t)
-    });
+
 
 </script>
 <script type="text/javascript">
